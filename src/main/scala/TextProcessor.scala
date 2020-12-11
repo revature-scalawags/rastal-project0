@@ -23,8 +23,11 @@ object TextProcessor {
   }
 
   def isWord(text: String): Boolean = {
+    val alphasNumbers = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+      "abcdefghijklmnopqrstuvwxyz" +
+      "1234567890"
     if (text.length == 0 ||
-        text(0) == '#' ||
+        !alphasNumbers.contains(text(0)) ||
         (text.length > 4 && text.contains("http")))
       false
     else
@@ -32,11 +35,19 @@ object TextProcessor {
   }
   
   def cleanWord(text: String): String = {
+    var cleanedWord = text
+    if (text(0) == '"' ||
+        text(0) == '@' ||
+        text(0) == '#') {
+      cleanedWord = text.substring(1)
+    }
     if (text.last == '!' ||
         text.last == '.' ||
-        text.last == '?')
-      text.substring(0, text.length-1)
-    else
-      text
+        text.last == '?' ||
+        text.last == '"') {
+      cleanedWord = text.substring(0, text.length-1)
+    }
+
+    cleanedWord
   }
 }
