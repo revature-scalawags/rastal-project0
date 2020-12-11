@@ -2,7 +2,7 @@
 
 **Rastal's Project 0**
 
-*Analyzes chunks of text from a TSV and determines the words that occur the most.*
+*Analyzes chunks of text from a file (each chunk being a separate line) and determines the words that occur the most.*
 
 ### Compile
 
@@ -10,7 +10,7 @@
 
 ### Test
 
-    sbt test
+    sbt test (not available yet)
 
 ### Run
 
