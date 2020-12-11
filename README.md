@@ -1,20 +1,22 @@
-# Text analyzer
+# Word Counter
 
 **Rastal's Project 0**
 
-*Analyzes chunks of text from a file (each chunk being a separate line) and determines the words that occur the most.*
+*Reads chunks of text from a file (each chunk being a separate line) and prints up to 100 of the most frequently occurring words to the command line.*
 
 ### Compile
 
-    sbt compile
+``sbt compile``
 
 ### Test
 
-    sbt test (not available yet)
+``sbt test`` *(not yet available)*
 
 ### Run
 
-    sbt run
+The analyzer takes a single argument with run, an integer for limiting the number of results to display (up to a maximum of 100).
+
+``sbt "run [maxResults]"``
 
 ## Requirements
 
