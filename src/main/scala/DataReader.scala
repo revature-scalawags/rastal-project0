@@ -2,7 +2,7 @@ import scala.collection.mutable.ArrayBuffer
 import scala.io.Source
 
 object DataReader {
-  val path = "src/main/python/test.tsv"
+  val path = "data/data.txt"
 
   def readData(): ArrayBuffer[String] = {
     val source = Source.fromFile(path)
