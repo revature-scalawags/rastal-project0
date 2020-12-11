@@ -1,8 +1,8 @@
-# Hashtag Sentiments
+# Text analyzer
 
 **Rastal's Project 0**
 
-*Analyzes tweets with a given hashtag to see if they generally contain positive, negative, or neutral sentiments.*
+*Analyzes chunks of text from a TSV and determines the words that occur the most.*
 
 ### Compile
 
