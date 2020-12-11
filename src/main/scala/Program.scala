@@ -1,3 +1,5 @@
+import scala.util.control.Breaks
+
 object Program extends App {
   var keyword = ""
   if (args.length > 0) {
@@ -5,5 +7,15 @@ object Program extends App {
   }
   val data = DataReader.readData()
   val sortedCounts = TextProcessor.processData(data)
-  for ((word,count) <- sortedCounts) println(s"$word: $count")
+  var i = 0
+  val loop = new Breaks
+  loop.breakable {
+    for ((word,count) <- sortedCounts) {
+      println(s"$word: $count")
+      i += 1
+      if (i > 25) {
+        loop.break()
+      }
+    }
+  }
 }
