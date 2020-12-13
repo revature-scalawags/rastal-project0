@@ -1,5 +1,6 @@
 import scala.collection.immutable.ListMap
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 import scala.util.control.Breaks
 import scala.util.{Failure, Success}
 
@@ -30,7 +31,7 @@ object Main extends App {
     println(s"Main accepts a maximum of one argument with 'sbt run'.\n$error")
   }
   
-  val dataFuture = DataReader.readData()
+  val dataFuture = Future { DataReader.readData() }
   dataFuture.onComplete {
     case Success(x) => displayResults(TextProcessor.processData(x))
     case Failure(e) => e.printStackTrace

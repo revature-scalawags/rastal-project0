@@ -1,6 +1,4 @@
 import scala.collection.mutable.ArrayBuffer
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 import scala.io.Source
 
 object DataReader {
@@ -9,7 +7,7 @@ object DataReader {
   /** Returns the lines of text from the source file as an ArrayBuffer[String]
     * for processing.
     */
-  def readData(path: String = DefaultPath): Future[ArrayBuffer[String]] = Future {
+  def readData(path: String = DefaultPath): ArrayBuffer[String] = {
     val source = Source.fromFile(path)
     val data = new ArrayBuffer[String]()
     for (line <- source.getLines()) {
