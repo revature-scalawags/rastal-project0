@@ -64,13 +64,13 @@ object TextProcessor {
     if (text(0) == '"' ||
         text(0) == '@' ||
         text(0) == '#') {
-      cleanedWord = text.substring(1)
+      cleanedWord = cleanedWord.drop(1)
     }
     if (text.last == '!' ||
         text.last == '.' ||
         text.last == '?' ||
         text.last == '"') {
-      cleanedWord = text.substring(0, text.length-1)
+      cleanedWord = cleanedWord.dropRight(1)
     }
 
     cleanedWord
