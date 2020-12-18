@@ -34,3 +34,7 @@ project/plugins/project/
 *.code-workspace
 
 # End of https://www.toptal.com/developers/gitignore/api/scala,sbt,metals,vscode
+
+src/main/python/
+
+data/data.txt
