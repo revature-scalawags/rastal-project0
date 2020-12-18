@@ -2,7 +2,7 @@ import org.scalatest.funsuite.AnyFunSuite
 import scala.io.Source
 import scala.util.control.Breaks
 
-class DataReaderTest extends AnyFunSuite {
+class InputDataTest extends AnyFunSuite {
   val Path = "data/test.txt"
 
   test("correctly opens source file") {
@@ -17,8 +17,8 @@ class DataReaderTest extends AnyFunSuite {
     }
   }
   
-  test("correctly converts lines of text to items in ArrayBuffer[String]") {
-    val data = DataReader.readData(Path)
+  test("correctly converts lines of text to items in List[String]") {
+    val data = InputData.read(Path)
     assert(data(0) == "#testA1 testA2")
   }
 }

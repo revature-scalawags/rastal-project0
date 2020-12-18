@@ -1,0 +1,1 @@
+Items in this folder are only used for setting up the Database that the rest of the app uses as input for calculations.
