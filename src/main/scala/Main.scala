@@ -4,6 +4,8 @@ import scala.concurrent.Future
 import scala.util.control.Breaks
 import scala.util.{Failure, Success}
 
+import TweetsAnalysis._
+
 /**
   * Reads text data from a file and counts the occurrences of each word.
   * 
@@ -22,7 +24,7 @@ object Main extends App {
     // https://alvinalexander.com/scala/using-scala-option-some-none-idiom-function-java-null/
     toInt(keyword) match {
       case Some(i) if (i > 0 && i < 100) => maxResults = i
-      case _ => println(error)
+      case _ => println(error) 
     }
     if (maxResults > 100 || maxResults < 1) {
       println(error)
@@ -31,11 +33,18 @@ object Main extends App {
     println(s"Main accepts a maximum of one argument with 'sbt run'.\n$error")
   }
   
-  val dataFuture = Future { DataReader.readData() }
-  dataFuture.onComplete {
-    case Success(x) => displayResults(TextProcessor.processData(x))
-    case Failure(e) => e.printStackTrace
-  }
+  // Only run to set up the raw Tweets data in MongoDB
+  //MongoIO.insertTweets(MongoTweetsSetup.convertToMongo(MongoTweetsSetup.readFromSource()))
+
+  // TODO implement Futures again and add HOFs
+  // val dataFuture = Future { TweetsMongoSetup.readFromSource() }
+  // dataFuture.onComplete {
+  //   case Success(x) => displayResults(TextProcessor.countWords(x))
+  //   case Failure(e) => e.printStackTrace
+  // }
+
+  val counts = TweetsAnalysis.cleanAndCountWords(MongoIO.getTweets().tweets)
+  MongoIO.insertCounts(counts.sort.groom(maxResults).toCounts)
 
   // Necessary to make sure the JVM stays alive long enough for the 
   // Future to actually return and print

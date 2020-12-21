@@ -2,7 +2,7 @@ import org.scalatest.funsuite.AnyFunSuite
 import scala.io.Source
 import scala.util.control.Breaks
 
-class InputDataTest extends AnyFunSuite {
+class MongoTweetsSetupTest extends AnyFunSuite {
   val Path = "data/test.txt"
 
   test("correctly opens source file") {
@@ -18,7 +18,7 @@ class InputDataTest extends AnyFunSuite {
   }
   
   test("correctly converts lines of text to items in List[String]") {
-    val data = InputData.read(Path)
+    val data = MongoTweetsSetup.readFromSource(Path)
     assert(data(0) == "#testA1 testA2")
   }
 }
