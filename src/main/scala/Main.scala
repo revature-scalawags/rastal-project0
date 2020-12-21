@@ -6,8 +6,7 @@ import scala.util.{Failure, Success}
 
 import HashtagAnalysis._
 
-/**
-  * Reads text data from a file and counts the occurrences of each word.
+/** Reads text data from a file and counts the occurrences of each word.
   * 
   * If no integer argument between 1 and 100 is passed in as an argument,
   * defaults to printing top 100 results.
@@ -16,35 +15,40 @@ object Main extends App {
   var maxResults = 100  // Default max results to return
   
   // Process the CLI arguments passed in with sbt "run [argument]"
+  val warning = "\nWARNING: "
   val error = "For maxResults argument, please enter a valid integer " +
-    "between 1 and 100 (inclusive).\nDefaulting to 100."
+    "between 1 and 100 (inclusive).\nDefaulting to 100.\n"
   if (args.length == 1) {
-    val keyword = args(0)
+    val keyword = args.head
     // Pulled from Alvin Alexander's article on Option, Some, and None.
     // https://alvinalexander.com/scala/using-scala-option-some-none-idiom-function-java-null/
     toInt(keyword) match {
       case Some(i) if (i > 0 && i < 100) => maxResults = i
-      case _ => println(error) 
+      case _ => println(s"$warning$error") 
     }
     if (maxResults > 100 || maxResults < 1) {
-      println(error)
+      println(s"$warning$error")
     }
   } else if (args.length > 1) {
-    println(s"Main accepts a maximum of one argument with 'sbt run'.\n$error")
+    println(s"$warning Main accepts a maximum of one argument with 'sbt run'.\n$error")
   }
   
   // Only run to set up the raw Tweets data in MongoDB
   //MongoIO.insertTweets(MongoTweetsSetup.convertToMongo(MongoTweetsSetup.readFromSource()))
 
-  // val dataFuture = Future { TweetsMongoSetup.readFromSource() }
-  // dataFuture.onComplete {
-  //   case Success(x) => displayResults(TextProcessor.countWords(x))
-  //   case Failure(e) => e.printStackTrace
-  // }
-
-  val counts = MongoIO.getTweets().tweets.toCleanedWords.tally
-  //MongoIO.insertCounts(counts.sort.groom(maxResults).toCounts)
-  counts.sort.take(maxResults).foreach(println)
+  println("Retrieving hashtag's tweets from MongoDB...\n")
+  val tweetsFuture = Future { MongoIO.getTweets() }
+  tweetsFuture.onComplete {
+    case Success(tweets) =>  
+      println("Tallying word occurrences in tweets...\n")
+      val counts = tweets.tweets.toCleanedWords.tally
+      println("Inserting results into MongoDB...\n")
+      //MongoIO.insertCounts(counts.sort.take(maxResults).toCounts)
+      println("MongoDB successfully updated!\n")
+      println("Top five results from word count:")
+      displayResults(counts.sort.take(5))
+    case Failure(exception) => exception.printStackTrace
+  }
 
   // Necessary to make sure the JVM stays alive long enough for the 
   // Future to actually return and print
@@ -56,7 +60,7 @@ object Main extends App {
     val loop = new Breaks
     loop.breakable {
       for ((word,count) <- results) {
-        println(s"$word: $count")
+        println(s"   $word: $count")
         i += 1
         if (i > maxResults) {
           loop.break()
