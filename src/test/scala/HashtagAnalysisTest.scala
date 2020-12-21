@@ -38,8 +38,8 @@ class HashtagAnalysisTest extends AnyFunSuite {
 
   test("correctly sorts word counts") {
     val text = List("test2 test1", "test1 test2", "test1", "test3", "test4")
-    val sorted = text.toCleanedWords.tally
-    val words = sorted.keys.toArray
+    val sorted = text.toCleanedWords.tally.sort
+    val words = sorted.keys.toList
     assert(words(0) == "test1")
     assert(words(1) == "test2")
   }
