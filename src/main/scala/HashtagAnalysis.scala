@@ -2,33 +2,6 @@ import scala.collection.immutable.ListMap
 import scala.collection.mutable
 
 object HashtagAnalysis {
-  /** Helper methods for trimming a Map of word counts down to a certain size,
-    * sorting the word counts in descending order by count, and converting the
-    * map to a Counts object for inserting into MongoDB.
-    */
-  implicit class WordCounts(counts: ListMap[String, Int]) {
-    /** Returns a map comtaining n number of words with their counts.
-      * 
-      * Only useful to call after the sort method is called.
-      */
-    def groom(n: Int = 100): ListMap[String, Int] = {
-      counts.take(n)
-    }
-
-    /** Returns a map of words and counts, sorted in descending order by count.*/
-    def sort: ListMap[String, Int] = {
-      ListMap(counts.toSeq.sortWith(_._2 > _._2):_*)
-    }
-    
-    /** Returns a Counts object from a Map containing words and their counts.
-      * 
-      * Used to convert raw counts into a form the Mongo Scala driver can interpret.
-      */
-    def toCounts: Counts = {
-      Counts(((for ((k,v) <- counts) yield Count(k,v)).toList))
-    }
-  }
-  
   /** Helper methods for checking to see if a string is a valid word and to 
     * clean that word of extra characters (like '@', '#', and punctuation). 
     */
@@ -94,6 +67,25 @@ object HashtagAnalysis {
       }
 
       ListMap(counts.toSeq:_*)
+    }
+  }
+
+  /** Helper methods for sorting a ListMap of word counts in descending order 
+    * by count, and converting the ListMap to a Counts object for inserting 
+    * into MongoDB.
+    */
+  implicit class WordCounts(counts: ListMap[String, Int]) {
+    /** Returns a ListMap of words and counts, sorted in descending order by count.*/
+    def sort: ListMap[String, Int] = {
+      ListMap(counts.toSeq.sortWith(_._2 > _._2):_*)
+    }
+    
+    /** Returns a Counts object from a ListMap containing words and their counts.
+      * 
+      * Used to convert raw counts into a form the Mongo Scala driver can interpret.
+      */
+    def toCounts: Counts = {
+      Counts(((for ((k,v) <- counts) yield Count(k,v)).toList))
     }
   }
 }

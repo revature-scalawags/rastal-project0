@@ -44,7 +44,7 @@ object Main extends App {
 
   val counts = MongoIO.getTweets().tweets.toCleanedWords.tally
   //MongoIO.insertCounts(counts.sort.groom(maxResults).toCounts)
-  counts.sort.groom(maxResults).foreach(println)
+  counts.sort.take(maxResults).foreach(println)
 
   // Necessary to make sure the JVM stays alive long enough for the 
   // Future to actually return and print

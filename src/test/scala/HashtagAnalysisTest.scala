@@ -21,7 +21,7 @@ class HashtagAnalysisTest extends AnyFunSuite {
     assert(!"https://test.test".isWord)
   }
 
-  test("correctly converts List of multi-word strings to List of words") {
+  test("correctly converts List of multi-word strings to List of single words") {
     val text = List("test @test1 testA.", "testB, test2")
     val words = text.toCleanedWords
     assert(words(0) == "test")
