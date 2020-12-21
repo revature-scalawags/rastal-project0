@@ -4,8 +4,10 @@ import org.mongodb.scala.bson.collection.immutable.Document
 import org.mongodb.scala.model.Filters._
 import org.mongodb.scala.MongoClient.DEFAULT_CODEC_REGISTRY
 import org.bson.codecs.configuration.CodecRegistries.{fromRegistries, fromProviders}
+
 import scala.collection.immutable.ListMap
 import scala.io.Source
+
 import tour.Helpers._
 
 object MongoIO {
@@ -14,6 +16,11 @@ object MongoIO {
   val client = MongoClient()
   val database = client.getDatabase("proj0").withCodecRegistry(registry)
 
+  def getTweets(hashtag: String = "gamedev"): Tweets = {
+    val collection: MongoCollection[Tweets] = database.getCollection("tweets")
+    collection.find(equal("hashtag", "gamedev")).results().head
+  }
+
   def insertTweets(tweets: Tweets): Unit = {
     val collection: MongoCollection[Tweets] = database.getCollection("tweets")
     // Only insert the Tweets document if one with this hashtag doesn't already exist
@@ -21,11 +28,6 @@ object MongoIO {
       collection.insertOne(tweets).results()
     else 
       println(s"Mongo Document with ${tweets.hashtag} already exists.")
-  }
-
-  def getTweets(hashtag: String = "gamedev"): Tweets = {
-    val collection: MongoCollection[Tweets] = database.getCollection("tweets")
-    collection.find(equal("hashtag", "gamedev")).results().head
   }
 
   def insertCounts(counts: Counts): Unit = {

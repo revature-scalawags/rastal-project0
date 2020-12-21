@@ -1,4 +1,5 @@
 import org.scalatest.funsuite.AnyFunSuite
+
 import scala.io.Source
 import scala.util.control.Breaks
 
