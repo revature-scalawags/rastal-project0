@@ -50,7 +50,7 @@ object HashtagAnalysis {
   implicit class StringList(strings: List[String]) {
     /** Converts a List of multi-word strings to a List of single word strings.*/
     def toCleanedWords: List[String] = {
-      strings.flatMap(_.split(" ")).map(_.clean).filter(_.isWord)
+      strings.flatMap(_.split(" ")).filter(_.length > 1).map(_.clean).filter(_.isWord)
     }
 
     /** Returns a ListMap of words and their counts from a List of single word
