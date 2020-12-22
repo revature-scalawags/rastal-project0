@@ -1,3 +1,5 @@
+import com.typesafe.scalalogging.LazyLogging
+
 import scala.collection.immutable.ListMap
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -11,7 +13,7 @@ import HashtagAnalysis._
   * If no integer argument between 1 and 100 is passed in as an argument,
   * defaults to printing top 100 results.
   */
-object Main extends App {
+object Main extends App with LazyLogging {
   var maxResults = 100  // Default max results to return
   
   // Process the CLI arguments passed in with sbt "run [argument]"
@@ -30,21 +32,24 @@ object Main extends App {
       println(s"$warning$error")
     }
   } else if (args.length > 1) {
-    println(s"$warning Main accepts a maximum of one argument with 'sbt run'.\n$error")
+    println(s"${warning}Main accepts a maximum of one argument with 'sbt run'.\n$error")
   }
   
   // Only run to set up the raw Tweets data in MongoDB
   //MongoIO.insertTweets(MongoTweetsSetup.convertToMongo(MongoTweetsSetup.readFromSource()))
-
-  println("Retrieving hashtag's tweets from MongoDB...\n")
+  val logMessages = List("Retrieving hashtag's tweets from MongoDB...\n",
+                         "Tallying word occurrences in tweets...\n",
+                         "Inserting results into MongoDB...\n",
+                         "MongoDB successfully updated!\n")
+  printAndLog(logMessages(0))
   val tweetsFuture = Future { MongoIO.getTweets() }
   tweetsFuture.onComplete {
     case Success(tweets) =>  
-      println("Tallying word occurrences in tweets...\n")
+      printAndLog(logMessages(1))
       val counts = tweets.tweets.toCleanedWords.tally
-      println("Inserting results into MongoDB...\n")
+      printAndLog(logMessages(2))
       //MongoIO.insertCounts(counts.sort.take(maxResults).toCounts)
-      println("MongoDB successfully updated!\n")
+      printAndLog(logMessages(3))
       println("Top five results from word count:")
       displayResults(counts.sort.take(5))
     case Failure(exception) => exception.printStackTrace
@@ -67,6 +72,12 @@ object Main extends App {
         }
       }
     }
+  }
+
+  /** Both prints out and logs whatever you pass into it.*/
+  def printAndLog(message: String): Unit = {
+    println(message)
+    logger.info(if (message.last == '\n') message.dropRight(1) else message)
   }
 
   /** Returns a String as Some(Int) if possible, None if not.
