@@ -47,9 +47,7 @@ object Main extends App with LazyLogging {
     case Success(tweets) =>  
       printAndLog(logMessages(1))
       val counts = tweets.tweets.toCleanedWords.tally
-      printAndLog(logMessages(2))
-      //MongoIO.insertCounts(counts.sort.take(maxResults).toCounts)
-      printAndLog(logMessages(3))
+      MongoIO.insertCounts(counts.sort.take(maxResults).toCounts)
       println("Top five results from word count:")
       displayResults(counts.sort.take(5))
     case Failure(exception) => exception.printStackTrace
